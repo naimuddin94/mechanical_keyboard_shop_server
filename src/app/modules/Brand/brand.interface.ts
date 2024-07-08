@@ -6,6 +6,6 @@ import { BrandValidation } from './brand.validation';
 export interface IBrand
   extends z.infer<typeof BrandValidation.brandValidationSchema> {}
 
-export interface IUserModel extends Model<IBrand, Record<string, never>> {
-  isBrandNameExists(email: string): Promise<HydratedDocument<IBrand>>;
+export interface IBrandModel extends Model<IBrand, Record<string, never>> {
+  isBrandNameExists(name: string): Promise<HydratedDocument<IBrand>>;
 }
