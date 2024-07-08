@@ -13,7 +13,7 @@ const brandSchema = new Schema<IBrand, IBrandModel>({
 });
 
 // Check that the brand name exists to database
-brandSchema.statics.isUserExists = async function (name: string) {
+brandSchema.statics.isBrandNameExists = async function (name: string) {
   const result = await Brand.findOne({ name });
   return result;
 };
