@@ -33,7 +33,7 @@ const deleteBrandFromDB = async (id: string) => {
   return result;
 };
 
-export const UserService = {
+export const BrandService = {
   saveBrandIntoDB,
   getSingleBrandFromDB,
   getAllBrandFromDB,
