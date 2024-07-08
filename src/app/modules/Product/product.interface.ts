@@ -4,7 +4,9 @@ import { z } from 'zod';
 import { ProductValidation } from './product.validation';
 
 export interface IProduct
-  extends z.infer<typeof ProductValidation.productValidationSchema> {}
+  extends z.infer<typeof ProductValidation.productValidationSchema> {
+  image: string;
+}
 
 export interface IProductModel extends Model<IProduct, Record<string, never>> {
   isProductNameExists(name: string): Promise<HydratedDocument<IProduct>>;
