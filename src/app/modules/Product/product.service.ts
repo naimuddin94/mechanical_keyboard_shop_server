@@ -1,23 +1,27 @@
+import { Request } from 'express';
 import httpStatus from 'http-status';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { ApiError } from '../../utils';
+import { fileUploadOnCloudinary } from '../../utils/fileUploadOnCloudinary';
 import Brand from '../Brand/brand.model';
-import { IProduct } from './product.interface';
 import Product from './product.model';
 import { productSearchableFields } from './product.utils';
 
 // Save new product into the database
-const saveProductIntoDB = async (payload: IProduct) => {
-  const isExistProductName = await Product.isProductNameExists(payload.name);
+const saveProductIntoDB = async (req: Request) => {
+  const productData = req.body;
+  const isExistProductName = await Product.isProductNameExists(
+    productData.name,
+  );
 
   if (isExistProductName) {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
-      `Product ${payload.name} already exists`,
+      `Product ${productData.name} already exists`,
     );
   }
 
-  const isExistBrand = await Brand.findById(payload.brand);
+  const isExistBrand = await Brand.findById(productData.brand);
 
   if (!isExistBrand) {
     throw new ApiError(
@@ -26,19 +30,28 @@ const saveProductIntoDB = async (payload: IProduct) => {
     );
   }
 
-  const result = await Product.create(payload);
+  if (req.file && req.file.buffer) {
+    productData.image = await fileUploadOnCloudinary(req.file.buffer);
+  }
+
+  const result = await Product.create(productData);
   return result;
 };
 
 // Update product into the database
-const updateProductIntoDB = async (id: string, payload: Partial<IProduct>) => {
+const updateProductIntoDB = async (id: string, req: Request) => {
+  const updateData = req.body;
   const product = await Product.findById(id);
 
   if (!product) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Product not found');
   }
 
-  const result = await Product.findByIdAndUpdate(id, payload, { new: true });
+  if (req.file && req.file.buffer) {
+    updateData.image = await fileUploadOnCloudinary(req.file.buffer);
+  }
+
+  const result = await Product.findByIdAndUpdate(id, updateData, { new: true });
   return result;
 };
 
