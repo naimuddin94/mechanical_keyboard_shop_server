@@ -11,6 +11,10 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
       type: String,
       required: true,
     },
+    image: {
+      type: String,
+      required: false,
+    },
     email: {
       type: String,
       required: true,
@@ -39,7 +43,6 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
   },
   {
     timestamps: true,
-    versionKey: false,
   },
 );
 

@@ -3,9 +3,11 @@ import { HydratedDocument, Model } from 'mongoose';
 import { z } from 'zod';
 import { UserValidation } from './user.validation';
 
-export interface IUser extends z.infer<typeof UserValidation.userValidationSchema> {
-  refreshToken: string;
-  passwordChangedAt: Date;
+export interface IUser
+  extends z.infer<typeof UserValidation.userValidationSchema> {
+  image?: string;
+  refreshToken?: string;
+  passwordChangedAt?: Date;
 }
 
 export interface IUserMethods {
