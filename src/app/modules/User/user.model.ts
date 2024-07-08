@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Schema, model } from 'mongoose';
 import config from '../../config';
-import { role, status } from './user.constant';
+import { role } from './user.constant';
 import { IUser, IUserMethods, IUserModel } from './user.interface';
 
 const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
@@ -21,29 +21,17 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
       required: true,
       select: 0,
     },
-    phone: {
-      type: String,
-      required: true,
-    },
     address: {
       type: String,
-      required: true,
+      required: false,
     },
     role: {
       type: String,
       enum: role,
-    },
-    status: {
-      type: String,
-      enum: status,
-      default: 'active',
+      default: 'user',
     },
     refreshToken: {
       type: String,
-    },
-    isDeleted: {
-      type: Boolean,
-      default: false,
     },
     passwordChangedAt: {
       type: Date,

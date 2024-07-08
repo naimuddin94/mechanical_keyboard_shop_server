@@ -28,7 +28,6 @@ const saveUserIntoDB = async (payload: IUser) => {
     'password',
     'createdAt',
     'updatedAt',
-    'status',
   ]);
 
   return userResponse;
@@ -39,14 +38,6 @@ const loginUser = async (payload: ILoginPayload) => {
 
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
-  }
-
-  if (user.isDeleted) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User is deleted');
-  }
-
-  if (user.status === 'blocked') {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'User is blocked');
   }
 
   const isPasswordCorrect = await user.isPasswordCorrect(payload.password);
@@ -66,8 +57,6 @@ const loginUser = async (payload: ILoginPayload) => {
     'createdAt',
     'updatedAt',
     'refreshToken',
-    'status',
-    'isDeleted',
   ]);
 
   return { token, refreshToken, data };
