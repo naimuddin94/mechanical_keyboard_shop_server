@@ -17,7 +17,7 @@ router
   );
 
 router
-  .route('/login')
+  .route('/signin')
   .post(
     validateRequest(UserValidation.loginUserValidationSchema),
     UserController.login,
