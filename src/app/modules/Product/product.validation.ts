@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import { z } from 'zod';
 
-const brandValidationSchema = z.object({
+const productValidationSchema = z.object({
   name: z.string({
     required_error: 'Product name is required',
     invalid_type_error: 'Product name must be string',
@@ -41,11 +41,11 @@ const brandValidationSchema = z.object({
     .optional(),
 });
 
-const createBandValidationSchema = z.object({
-  body: brandValidationSchema,
+const createProductValidationSchema = z.object({
+  body: productValidationSchema,
 });
 
-export const BrandValidation = {
-  brandValidationSchema,
-  createBandValidationSchema,
+export const ProductValidation = {
+  productValidationSchema,
+  createProductValidationSchema,
 };
