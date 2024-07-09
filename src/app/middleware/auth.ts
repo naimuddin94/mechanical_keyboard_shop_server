@@ -32,20 +32,8 @@ const auth = (...requiredRoles: TUserRole[]) => {
       if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'This user is not found !');
       }
-      // checking if the user is already deleted
 
-      const isDeleted = user?.isDeleted;
-
-      if (isDeleted) {
-        throw new ApiError(httpStatus.FORBIDDEN, 'This user is deleted !');
-      }
-
-      // checking if the user is blocked
-      const userStatus = user?.status;
-
-      if (userStatus === 'blocked') {
-        throw new ApiError(httpStatus.FORBIDDEN, 'This user is blocked !');
-      }
+      // Check if the user password changed
 
       if (
         user.passwordChangedAt &&

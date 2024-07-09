@@ -13,6 +13,10 @@ const brandSchema = new Schema<IRating>(
       ref: 'Product',
       required: true,
     },
+    rating: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true },
 );
