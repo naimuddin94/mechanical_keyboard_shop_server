@@ -29,12 +29,7 @@ const productValidationSchema = z.object({
     })
     .positive({ message: 'Stock must be positive number' })
     .optional(),
-  rating: z
-    .number({
-      required_error: 'Product rating is required',
-      invalid_type_error: 'Product rating must be a valid number',
-    })
-    .optional(),
+  rating: z.number().positive().min(1).max(5).optional(),
   isDeleted: z
     .boolean({ message: 'Product is deleted field is boolean' })
     .optional(),
