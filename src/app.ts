@@ -30,7 +30,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Application routes
-app.use('/api', router);
+app.use('/api/v1', router);
 
 // Not-Found routes error handler
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars

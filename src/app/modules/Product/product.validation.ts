@@ -16,12 +16,12 @@ const productValidationSchema = z.object({
     }
     return arg;
   }, z.instanceof(Types.ObjectId)),
-  price: z
-    .number({
-      required_error: 'Product price is required',
-      invalid_type_error: 'Product price must be a valid number',
-    })
-    .positive({ message: 'Product price must be positive number' }),
+  price: z.preprocess((arg: unknown) => {
+    if (typeof arg === 'string') {
+      return Number(arg);
+    }
+    return arg;
+  }, z.number().positive()),
   stock: z
     .number({
       required_error: 'Product stock is required',

@@ -29,13 +29,12 @@ const getAllBrandFromDB = async () => {
 };
 
 const deleteBrandFromDB = async (id: string) => {
-  const isBrandExists = await Brand.findById(id);
+  const result = await Brand.findByIdAndDelete(id);
 
-  if (!isBrandExists) {
+  if (!result) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Brand not found');
   }
 
-  const result = await Brand.findByIdAndDelete(id);
   return result;
 };
 
