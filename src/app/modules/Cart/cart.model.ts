@@ -14,6 +14,10 @@ const cartSchema = new Schema<ICart>(
       ref: 'Order',
       required: true,
     },
+    totalAmount: {
+      type: Number,
+      required: true,
+    },
     isConfirmed: {
       type: Boolean,
       default: false,
@@ -22,6 +26,10 @@ const cartSchema = new Schema<ICart>(
       type: String,
       enum: cartStatus,
       default: 'processing',
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {

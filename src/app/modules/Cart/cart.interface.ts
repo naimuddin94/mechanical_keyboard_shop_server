@@ -5,5 +5,7 @@ export interface ICart {
   user: Types.ObjectId;
   orders: [Types.ObjectId];
   isConfirmed: boolean;
-  status: typeof cartStatus[number];
+  totalAmount: number;
+  status: (typeof cartStatus)[number];
+  isDeleted: boolean;
 }
