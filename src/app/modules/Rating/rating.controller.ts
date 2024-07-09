@@ -18,6 +18,17 @@ const fetchAllRatings = asyncHandler(async (req, res) => {
   res
     .status(httpStatus.OK)
     .json(
+      new ApiResponse(httpStatus.OK, result, 'Ratings retrieved successfully'),
+    );
+});
+
+// Fetch single rating from the database
+const fetchSingleRating = asyncHandler(async (req, res) => {
+  const result = await RatingService.getSingleRatingFromDB(req);
+
+  res
+    .status(httpStatus.OK)
+    .json(
       new ApiResponse(httpStatus.OK, result, 'Rating retrieved successfully'),
     );
 });
@@ -25,4 +36,5 @@ const fetchAllRatings = asyncHandler(async (req, res) => {
 export const RatingController = {
   createRating,
   fetchAllRatings,
+  fetchSingleRating,
 };

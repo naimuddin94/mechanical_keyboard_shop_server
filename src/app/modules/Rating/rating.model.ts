@@ -21,6 +21,6 @@ const brandSchema = new Schema<IRating>(
   { timestamps: true },
 );
 
-const Rating = model<IRating>('Brand', brandSchema);
+const Rating = model<IRating>('Rating', brandSchema);
 
 export default Rating;
