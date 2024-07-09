@@ -7,54 +7,47 @@ import Product from '../Product/product.model';
 import Cart from './cart.model';
 import { CartValidation } from './cart.validation';
 
-// Save a new card into the database
 const saveCartIntoDB = async (
   userId: string,
   payload: z.infer<typeof CartValidation.cartValidationSchema>,
 ) => {
   const { orders } = payload;
 
-  // Find all products depend on requested order list
-  const products = await Product.find({
-    _id: { $in: orders.map((x) => x.product) },
-  }).select('stock price');
+  // Step 1: Validate orders and fetch product details
+  const productIds = orders.map((order) => order.product);
+  const products = await Product.find({ _id: { $in: productIds } }).select(
+    'stock price',
+  );
 
-  // Create a map to easily access product stock and price by product ID
-  const productMap = new Map();
-  products.forEach((product) => {
-    productMap.set(product._id.toString(), {
-      stock: product.stock,
-      price: product.price,
-    });
-  });
+  // Create a map for quick lookup of product details
+  const productMap = new Map(
+    products.map((product) => [product._id.toString(), product]),
+  );
 
+  // Step 2: Validate orders against available stock
   let totalAmount = 0;
-
   orders.forEach((order) => {
-    const productId = order.product.toString();
+    const product = productMap.get(order.product.toString());
 
-    const isProductExist = productMap.has(productId);
-
-    if (!isProductExist) {
-      throw new Error(`${productId} product id does not exist.`);
+    if (!product) {
+      throw new Error(`${order.product} product id does not exist.`);
     }
 
-    const { stock, price } = productMap.get(productId);
-    if (stock < order.quantity) {
+    if (Number(product.stock) < Number(order.quantity)) {
       throw new Error(
-        `${productId} product id does not have enough stock. Available: ${stock}, Ordered: ${order.quantity}`,
+        `${product._id} product id does not have enough stock. Available: ${product.stock}, Ordered: ${order.quantity}`,
       );
     }
 
-    totalAmount += order.quantity * price;
+    totalAmount += order.quantity * product.price;
   });
 
+  // Step 3: Start a Mongoose session and transaction
   const session = await mongoose.startSession();
+  session.startTransaction();
 
   try {
-    session.startTransaction();
-
-    // Insert order at a time to the database
+    // Step 4: Insert orders into the Order collection
     const ordersData = orders.map((order) => ({
       user: userId,
       product: order.product,
@@ -62,19 +55,18 @@ const saveCartIntoDB = async (
     }));
 
     const orderResult = await Order.insertMany(ordersData, { session });
-
     const orderIds = orderResult.map((order) => order._id);
 
+    // Step 5: Create the cart document
     const cartData = {
       user: userId,
       orders: orderIds,
       totalAmount,
     };
 
-    // Create cart into the database
     const cartResult = await Cart.create([cartData], { session });
 
-    // Reduce stock in product documents
+    // Step 6: Update product stock
     const bulkOperations = orders.map((order) => ({
       updateOne: {
         filter: { _id: order.product },
@@ -84,10 +76,11 @@ const saveCartIntoDB = async (
 
     await Product.bulkWrite(bulkOperations, { session });
 
+    // Step 7: Commit transaction
     await session.commitTransaction();
     await session.endSession();
 
-    // Populate the cart with order details
+    // Step 8: Populate and return the cart with order details
     const populatedCart = await Cart.populate(cartResult, {
       path: 'orders',
       populate: {
@@ -102,9 +95,9 @@ const saveCartIntoDB = async (
       },
     });
 
-    // Return populated cart
     return populatedCart;
   } catch (error) {
+    // Step 9: Handle errors and abort transaction
     await session.abortTransaction();
     await session.endSession();
     throw new ApiError(
