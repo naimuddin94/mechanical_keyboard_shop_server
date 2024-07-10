@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
 import { z } from 'zod';
+import { cartStatus } from './cart.util';
 
 const orderValidationSchema = z.object({
   product: z.preprocess((arg: unknown) => {
@@ -19,7 +20,14 @@ const createCartValidationSchema = z.object({
   body: cartValidationSchema,
 });
 
+const changeCartStatus = z.object({
+  body: z.object({
+    status: z.enum(cartStatus),
+  }),
+});
+
 export const CartValidation = {
   cartValidationSchema,
   createCartValidationSchema,
+  changeCartStatus,
 };

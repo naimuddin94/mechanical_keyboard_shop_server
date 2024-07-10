@@ -18,4 +18,11 @@ router
   .route('/my-orders')
   .get(auth('admin', 'user'), CartController.fetchCartByUserId);
 
+router
+  .route('/change-status/:id')
+  .patch(
+    validateRequest(CartValidation.changeCartStatus),
+    CartController.changeCartStatus,
+  );
+
 export const cartRouter = router;

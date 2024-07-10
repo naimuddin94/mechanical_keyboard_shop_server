@@ -127,7 +127,22 @@ const getSingleCartDataFromDB = async (user: string) => {
   return result;
 };
 
+const changeCartStatusIntoDB = async (id: string, status: string) => {
+  const result = await Cart.findOneAndUpdate(
+    { _id: id, isDeleted: { $ne: true } },
+    { status },
+    { new: true },
+  );
+
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found');
+  }
+  
+  return result;
+};
+
 export const CartService = {
   saveCartIntoDB,
   getSingleCartDataFromDB,
+  changeCartStatusIntoDB,
 };

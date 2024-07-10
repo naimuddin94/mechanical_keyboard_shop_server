@@ -25,7 +25,26 @@ const fetchCartByUserId = asyncHandler(async (req, res) => {
     );
 });
 
+// Change cart status information
+const changeCartStatus = asyncHandler(async (req, res) => {
+  const cartId = req.params.id;
+  const { status } = req.body;
+
+  const result = await CartService.changeCartStatusIntoDB(cartId, status);
+
+  res
+    .status(httpStatus.OK)
+    .json(
+      new ApiResponse(
+        httpStatus.OK,
+        result,
+        'Cart status changed successfully',
+      ),
+    );
+});
+
 export const CartController = {
   createCart,
   fetchCartByUserId,
+  changeCartStatus,
 };
