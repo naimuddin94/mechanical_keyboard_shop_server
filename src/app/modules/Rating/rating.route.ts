@@ -18,4 +18,6 @@ router
   .route('/:id')
   .get(auth('admin', 'user'), RatingController.fetchSingleRating);
 
+router.route('/product/:id').get(RatingController.fetchAllRatingsOnProductId);
+
 export const ratingRouter = router;

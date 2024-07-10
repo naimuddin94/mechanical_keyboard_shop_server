@@ -33,8 +33,20 @@ const fetchSingleRating = asyncHandler(async (req, res) => {
     );
 });
 
+// Fetch all ratings depending on product
+const fetchAllRatingsOnProductId = asyncHandler(async (req, res) => {
+  const productId = req.params.id;
+  const result = await RatingService.getRatingsOnProductId(productId);
+  res
+    .status(httpStatus.OK)
+    .json(
+      new ApiResponse(httpStatus.OK, result, 'Ratings retrieved successfully'),
+    );
+});
+
 export const RatingController = {
   createRating,
   fetchAllRatings,
   fetchSingleRating,
+  fetchAllRatingsOnProductId,
 };
