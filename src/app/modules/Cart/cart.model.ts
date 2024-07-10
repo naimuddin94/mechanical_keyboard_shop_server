@@ -37,6 +37,22 @@ const cartSchema = new Schema<ICart>(
   },
 );
 
+// filter out deleted documents
+cartSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+cartSchema.pre('findOne', function (next) {
+  this.findOne({ isDeleted: { $ne: true } });
+  next();
+});
+
+cartSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
 const Cart = model('Cart', cartSchema);
 
 export default Cart;

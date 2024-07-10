@@ -22,13 +22,12 @@ const productValidationSchema = z.object({
     }
     return arg;
   }, z.number().positive()),
-  stock: z
-    .number({
-      required_error: 'Product stock is required',
-      invalid_type_error: 'Product stock must be a valid number',
-    })
-    .positive({ message: 'Stock must be positive number' })
-    .optional(),
+  stock: z.preprocess((arg: unknown) => {
+    if (typeof arg === 'string') {
+      return Number(arg);
+    }
+    return arg;
+  }, z.number().positive()),
   rating: z.number().positive().min(1).max(5).optional(),
   isDeleted: z
     .boolean({ message: 'Product is deleted field is boolean' })

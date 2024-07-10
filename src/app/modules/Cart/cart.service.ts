@@ -107,6 +107,27 @@ const saveCartIntoDB = async (
   }
 };
 
+const getSingleCartDataFromDB = async (user: string) => {
+  const result = await Cart.find({
+    user,
+    status: { $ne: 'received' },
+  }).populate({
+    path: 'orders',
+    populate: {
+      path: 'product',
+      model: 'Product',
+      select: 'name brand price rating image',
+      populate: {
+        path: 'brand',
+        model: 'Brand',
+        transform: (doc) => doc.name,
+      },
+    },
+  });
+  return result;
+};
+
 export const CartService = {
   saveCartIntoDB,
+  getSingleCartDataFromDB,
 };

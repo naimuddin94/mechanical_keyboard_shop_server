@@ -14,4 +14,8 @@ router
     CartController.createCart,
   );
 
+router
+  .route('/my-orders')
+  .get(auth('admin', 'user'), CartController.fetchCartByUserId);
+
 export const cartRouter = router;
