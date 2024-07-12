@@ -23,6 +23,6 @@ router
     UserController.login,
   );
 
-router.route('/logout').post(UserController.logout);
+router.route('/signout').post(UserController.logout);
 
 export const userRouter = router;

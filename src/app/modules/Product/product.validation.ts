@@ -1,6 +1,8 @@
 import { Types } from 'mongoose';
 import { z } from 'zod';
 
+// 20501430100460005
+
 const productValidationSchema = z.object({
   name: z.string({
     required_error: 'Product name is required',

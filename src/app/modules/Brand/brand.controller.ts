@@ -25,7 +25,8 @@ const fetchSingleBrand = asyncHandler(async (req, res) => {
 
 // Fetch all brand list
 const fetchAllBrands = asyncHandler(async (req, res) => {
-  const result = await BrandService.getAllBrandFromDB();
+  const query = req.query;
+  const result = await BrandService.getAllBrandFromDB(query);
   res
     .status(httpStatus.OK)
     .json(

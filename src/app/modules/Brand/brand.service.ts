@@ -1,4 +1,5 @@
 import httpStatus from 'http-status';
+import QueryBuilder from '../../builder/QueryBuilder';
 import { ApiError } from '../../utils';
 import { IBrand } from './brand.interface';
 import Brand from './brand.model';
@@ -23,9 +24,20 @@ const getSingleBrandFromDB = async (id: string) => {
 };
 
 // Get all brand form database
-const getAllBrandFromDB = async () => {
-  const result = await Brand.find();
-  return result;
+const getAllBrandFromDB = async (query: Record<string, unknown>) => {
+  const brandQuery = new QueryBuilder(Brand.find(), query)
+    .search(['name', 'origin'])
+    .filter()
+    .sort()
+    .paginate()
+
+  const result = await brandQuery.modelQuery;
+  const meta = await brandQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
 const deleteBrandFromDB = async (id: string) => {
