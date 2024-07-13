@@ -30,6 +30,10 @@ const saveProductIntoDB = async (req: Request) => {
     );
   }
 
+  if (!req.file) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Product image is required');
+  }
+
   if (req.file && req.file.buffer) {
     productData.image = await fileUploadOnCloudinary(req.file.buffer);
   }
