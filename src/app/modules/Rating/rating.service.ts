@@ -1,13 +1,14 @@
 import { Request } from 'express';
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
+import QueryBuilder from '../../builder/QueryBuilder';
 import { ApiError } from '../../utils';
 import Product from '../Product/product.model';
 import Rating from './rating.model';
 
 // Save rating into the database
 const saveRatingIntoDB = async (req: Request) => {
-  const { product, rating } = req.body;
+  const { product, rating, feedback } = req.body;
   const user = req.user.id;
   const isExistRating = await Rating.findOne({ product, user });
 
@@ -19,12 +20,20 @@ const saveRatingIntoDB = async (req: Request) => {
     let result;
 
     if (isExistRating) {
-      isExistRating.rating = rating;
+      if (rating) {
+        isExistRating.rating = rating;
+      }
+      if (feedback) {
+        isExistRating.feedback = feedback;
+      }
       result = await isExistRating.save({ session });
     } else {
-      const resultArray = await Rating.create([{ product, user, rating }], {
-        session,
-      });
+      const resultArray = await Rating.create(
+        [{ product, user, rating, feedback }],
+        {
+          session,
+        },
+      );
       result = resultArray[0];
     }
 
@@ -73,9 +82,28 @@ const getSingleRatingFromDB = async (req: Request) => {
 };
 
 // Fetch all rating depend on the product
-const getRatingsOnProductId = async (productId: string) => {
-  const result = await Rating.find({ product: productId });
-  return result;
+const getRatingsOnProductId = async (
+  productId: string,
+  query: Record<string, unknown>,
+) => {
+  const productQuery = new QueryBuilder(
+    Rating.find({ product: productId }).populate({
+      path: 'user',
+      select: 'name image',
+    }),
+    query,
+  )
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await productQuery.modelQuery;
+  const meta = await productQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
 export const RatingService = {

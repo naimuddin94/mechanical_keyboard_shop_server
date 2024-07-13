@@ -36,7 +36,8 @@ const fetchSingleRating = asyncHandler(async (req, res) => {
 // Fetch all ratings depending on product
 const fetchAllRatingsOnProductId = asyncHandler(async (req, res) => {
   const productId = req.params.id;
-  const result = await RatingService.getRatingsOnProductId(productId);
+  const query = req.query;
+  const result = await RatingService.getRatingsOnProductId(productId, query);
   res
     .status(httpStatus.OK)
     .json(
