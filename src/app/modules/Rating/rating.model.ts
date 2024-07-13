@@ -17,6 +17,9 @@ const brandSchema = new Schema<IRating>(
       type: Number,
       required: true,
     },
+    feedback: {
+      type: String,
+    },
   },
   { timestamps: true },
 );

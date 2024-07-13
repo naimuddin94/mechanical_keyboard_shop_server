@@ -9,6 +9,7 @@ const ratingValidationSchema = z.object({
     return arg;
   }, z.instanceof(Types.ObjectId)),
   rating: z.number().positive().min(1).max(5),
+  feedback: z.string().optional(),
 });
 
 const createRatingValidationSchema = z.object({
