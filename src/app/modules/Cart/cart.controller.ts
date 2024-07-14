@@ -9,7 +9,7 @@ const createCart = asyncHandler(async (req, res) => {
   res
     .status(httpStatus.CREATED)
     .json(
-      new ApiResponse(httpStatus.CREATED, result, 'Cart saved successfully'),
+      new ApiResponse(httpStatus.CREATED, result, 'Thank you for your orders'),
     );
 });
 
