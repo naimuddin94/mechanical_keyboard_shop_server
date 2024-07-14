@@ -18,6 +18,27 @@ const cartSchema = new Schema<ICart>(
       type: Number,
       required: true,
     },
+    address: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    state: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    paymentInfo: {
+      type: String,
+      required: true,
+    },
+
     isConfirmed: {
       type: Boolean,
       default: false,

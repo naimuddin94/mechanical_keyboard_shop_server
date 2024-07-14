@@ -11,7 +11,7 @@ const saveCartIntoDB = async (
   userId: string,
   payload: z.infer<typeof CartValidation.cartValidationSchema>,
 ) => {
-  const { orders } = payload;
+  const { orders, address, city, state, zip, phone, paymentInfo } = payload;
 
   // Step 1: Validate orders and fetch product details
   const productIds = orders.map((order) => order.product);
@@ -62,6 +62,12 @@ const saveCartIntoDB = async (
       user: userId,
       orders: orderIds,
       totalAmount,
+      address,
+      city,
+      state,
+      zip,
+      phone,
+      paymentInfo,
     };
 
     const cartResult = await Cart.create([cartData], { session });
@@ -137,7 +143,7 @@ const changeCartStatusIntoDB = async (id: string, status: string) => {
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Cart not found');
   }
-  
+
   return result;
 };
 

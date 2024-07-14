@@ -13,6 +13,12 @@ const orderValidationSchema = z.object({
 });
 
 const cartValidationSchema = z.object({
+  address: z.string(),
+  city: z.string(),
+  state: z.string(),
+  zip: z.string(),
+  phone: z.string(),
+  paymentInfo: z.string().optional(),
   orders: z.array(orderValidationSchema),
 });
 

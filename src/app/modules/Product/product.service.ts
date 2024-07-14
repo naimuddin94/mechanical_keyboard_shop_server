@@ -51,11 +51,21 @@ const updateProductIntoDB = async (id: string, req: Request) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Product not found');
   }
 
+  if (updateData?.name) {
+    const isExistsProductName = await Product.findOne({
+      name: updateData?.name,
+    });
+    if (isExistsProductName) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Product name already exists');
+    }
+  }
+
   if (req.file && req.file.buffer) {
     updateData.image = await fileUploadOnCloudinary(req.file.buffer);
   }
 
   const result = await Product.findByIdAndUpdate(id, updateData, { new: true });
+
   return result;
 };
 
