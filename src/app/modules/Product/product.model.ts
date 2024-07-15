@@ -14,6 +14,7 @@ const brandSchema = new Schema(
   },
   {
     versionKey: false,
+    _id: false,
   },
 );
 

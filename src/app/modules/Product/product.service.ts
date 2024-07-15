@@ -10,9 +10,12 @@ import { productSearchableFields } from './product.utils';
 // Save new product into the database
 const saveProductIntoDB = async (req: Request) => {
   const { brand, ...remainProductData } = req.body;
-  const isExistProductName = await Product.isProductNameExists(
-    remainProductData.name,
-  );
+
+  // Fetch brand and check if product name exists in parallel
+  const [isExistProductName, isExistBrand] = await Promise.all([
+    Product.isProductNameExists(remainProductData.name),
+    Brand.findById(brand),
+  ]);
 
   if (isExistProductName) {
     throw new ApiError(
@@ -20,8 +23,6 @@ const saveProductIntoDB = async (req: Request) => {
       `Product ${remainProductData.name} already exists`,
     );
   }
-
-  const isExistBrand = await Brand.findById(brand);
 
   if (!isExistBrand) {
     throw new ApiError(
@@ -34,10 +35,12 @@ const saveProductIntoDB = async (req: Request) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Product image is required');
   }
 
+  // Upload image to Cloudinary if it exists
   if (req.file && req.file.buffer) {
     remainProductData.image = await fileUploadOnCloudinary(req.file.buffer);
   }
 
+  // Assign brand details
   remainProductData.brand = {
     name: isExistBrand.name,
     origin: isExistBrand.origin,

@@ -9,11 +9,7 @@ const createProduct = asyncHandler(async (req, res) => {
   res
     .status(httpStatus.CREATED)
     .json(
-      new ApiResponse(
-        httpStatus.CREATED,
-        result,
-        'Product created successfully',
-      ),
+      new ApiResponse(httpStatus.CREATED, result, 'Product saved successfully'),
     );
 });
 
