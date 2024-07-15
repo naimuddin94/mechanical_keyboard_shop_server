@@ -8,7 +8,7 @@ const createRating = asyncHandler(async (req, res) => {
   res
     .status(httpStatus.CREATED)
     .json(
-      new ApiResponse(httpStatus.CREATED, result, 'Rating saved successfully'),
+      new ApiResponse(httpStatus.CREATED, result, 'Thanks for your feedback'),
     );
 });
 

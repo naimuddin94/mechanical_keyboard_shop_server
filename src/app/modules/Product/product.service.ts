@@ -9,19 +9,19 @@ import { productSearchableFields } from './product.utils';
 
 // Save new product into the database
 const saveProductIntoDB = async (req: Request) => {
-  const productData = req.body;
+  const { brand, ...remainProductData } = req.body;
   const isExistProductName = await Product.isProductNameExists(
-    productData.name,
+    remainProductData.name,
   );
 
   if (isExistProductName) {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
-      `Product ${productData.name} already exists`,
+      `Product ${remainProductData.name} already exists`,
     );
   }
 
-  const isExistBrand = await Brand.findById(productData.brand);
+  const isExistBrand = await Brand.findById(brand);
 
   if (!isExistBrand) {
     throw new ApiError(
@@ -35,43 +35,63 @@ const saveProductIntoDB = async (req: Request) => {
   }
 
   if (req.file && req.file.buffer) {
-    productData.image = await fileUploadOnCloudinary(req.file.buffer);
+    remainProductData.image = await fileUploadOnCloudinary(req.file.buffer);
   }
 
-  const result = await Product.create(productData);
+  remainProductData.brand = {
+    name: isExistBrand.name,
+    origin: isExistBrand.origin,
+  };
+
+  const result = await Product.create(remainProductData);
   return result;
 };
 
 // Update product into the database
 const updateProductIntoDB = async (id: string, req: Request) => {
-  const updateData = req.body;
+  const { brand, ...remainUpdateData } = req.body;
   const product = await Product.findById(id);
 
   if (!product) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Product not found');
   }
 
-  if (updateData?.name) {
+  if (remainUpdateData?.name) {
     const isExistsProductName = await Product.findOne({
-      name: updateData?.name,
+      name: remainUpdateData?.name,
     });
     if (isExistsProductName) {
       throw new ApiError(httpStatus.BAD_REQUEST, 'Product name already exists');
     }
   }
 
-  if (req.file && req.file.buffer) {
-    updateData.image = await fileUploadOnCloudinary(req.file.buffer);
+  if (brand) {
+    const isExistBrand = await Brand.findById(brand);
+
+    if (!isExistBrand) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Brand not found');
+    }
+
+    remainUpdateData.brand = {
+      name: isExistBrand.name,
+      origin: isExistBrand.origin,
+    };
   }
 
-  const result = await Product.findByIdAndUpdate(id, updateData, { new: true });
+  if (req.file && req.file.buffer) {
+    remainUpdateData.image = await fileUploadOnCloudinary(req.file.buffer);
+  }
+
+  const result = await Product.findByIdAndUpdate(id, remainUpdateData, {
+    new: true,
+  });
 
   return result;
 };
 
 // Fetch all products from the database
 const getAllProductsFromDB = async (query: Record<string, unknown>) => {
-  const productQuery = new QueryBuilder(Product.find().populate('brand'), query)
+  const productQuery = new QueryBuilder(Product.find(), query)
     .search(productSearchableFields)
     .filter()
     .sort()
@@ -89,7 +109,7 @@ const getAllProductsFromDB = async (query: Record<string, unknown>) => {
 
 // Fetch single product from the database
 const getSingleProductFromDB = async (id: string) => {
-  const result = await Product.findById(id).populate('brand');
+  const result = await Product.findById(id);
 
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');

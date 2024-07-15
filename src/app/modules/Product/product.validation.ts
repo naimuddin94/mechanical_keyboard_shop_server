@@ -12,6 +12,14 @@ const productValidationSchema = z.object({
     required_error: 'Product description is required',
     invalid_type_error: 'Product description must be a valid string',
   }),
+  material: z.string({
+    required_error: 'Material is required',
+    invalid_type_error: 'Material must be a valid string',
+  }),
+  weight: z.string({
+    required_error: 'Weight is required',
+    invalid_type_error: 'Weight must be a valid string',
+  }),
   brand: z.preprocess((arg: unknown) => {
     if (typeof arg === 'string') {
       return new Types.ObjectId(arg);
@@ -31,9 +39,6 @@ const productValidationSchema = z.object({
     return arg;
   }, z.number().positive()),
   rating: z.number().positive().min(1).max(5).optional(),
-  isDeleted: z
-    .boolean({ message: 'Product is deleted field is boolean' })
-    .optional(),
 });
 
 const createProductValidationSchema = z.object({

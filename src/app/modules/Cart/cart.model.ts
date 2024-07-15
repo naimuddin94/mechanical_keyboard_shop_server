@@ -24,11 +24,9 @@ const cartSchema = new Schema<ICart>(
     },
     city: {
       type: String,
-      required: true,
     },
     state: {
       type: String,
-      required: true,
     },
     phone: {
       type: String,

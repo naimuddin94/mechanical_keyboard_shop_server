@@ -4,8 +4,19 @@ import { z } from 'zod';
 import { ProductValidation } from './product.validation';
 
 export interface IProduct
-  extends z.infer<typeof ProductValidation.productValidationSchema> {
+  extends Pick<
+    z.infer<typeof ProductValidation.productValidationSchema>,
+    | 'name'
+    | 'price'
+    | 'rating'
+    | 'stock'
+    | 'description'
+    | 'material'
+    | 'weight'
+  > {
   image: string;
+  brand: { name: string; origin: string };
+  isDeleted: boolean;
 }
 
 export interface IProductModel extends Model<IProduct, Record<string, never>> {
