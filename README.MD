@@ -138,6 +138,9 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 If you have any questions or suggestions, feel free to reach out to me.
 
+[![Connect on LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=for-the-badge&logo=linkedin)](www.linkedin.com/in/iamnaimuddin)
+
+
 ---
 
 This backend project not only demonstrates my technical proficiency in web development, including TypeScript and Express, but also highlights my ability to create secure, scalable, and efficient backend solutions using the MVC pattern. It embodies my commitment to delivering high-quality, feature-rich applications that meet both user and business needs effectively.
