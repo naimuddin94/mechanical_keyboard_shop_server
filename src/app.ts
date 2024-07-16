@@ -20,7 +20,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'http://localhost:5173'],
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'https://keeb-keyboard.vercel.app',
+    ],
     credentials: true,
   }),
 );
