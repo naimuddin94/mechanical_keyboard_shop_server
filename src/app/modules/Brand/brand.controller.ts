@@ -23,6 +23,17 @@ const fetchSingleBrand = asyncHandler(async (req, res) => {
     );
 });
 
+// Fetch single brand by name
+const fetchSingleBrandByName = asyncHandler(async (req, res) => {
+  const brandName = req.params.name;
+  const result = await BrandService.getSingleBrandByNameFromDB(brandName);
+  res
+    .status(httpStatus.OK)
+    .json(
+      new ApiResponse(httpStatus.OK, result, 'Brand retrieved successfully'),
+    );
+});
+
 // Fetch all brand list
 const fetchAllBrands = asyncHandler(async (req, res) => {
   const query = req.query;
@@ -48,4 +59,5 @@ export const BrandController = {
   fetchSingleBrand,
   fetchAllBrands,
   deleteBrand,
+  fetchSingleBrandByName,
 };

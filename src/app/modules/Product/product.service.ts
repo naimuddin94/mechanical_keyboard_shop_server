@@ -14,7 +14,9 @@ const saveProductIntoDB = async (req: Request) => {
   // Fetch brand and check if product name exists in parallel
   const [isExistProductName, isExistBrand] = await Promise.all([
     Product.isProductNameExists(remainProductData.name),
-    Brand.findById(brand),
+    Brand.findOne({
+      name: { $regex: brand, $options: 'i' },
+    }),
   ]);
 
   if (isExistProductName) {
@@ -62,6 +64,7 @@ const updateProductIntoDB = async (id: string, req: Request) => {
   if (remainUpdateData?.name) {
     const isExistsProductName = await Product.findOne({
       name: remainUpdateData?.name,
+      _id: { $ne: id },
     });
     if (isExistsProductName) {
       throw new ApiError(httpStatus.BAD_REQUEST, 'Product name already exists');
@@ -69,7 +72,9 @@ const updateProductIntoDB = async (id: string, req: Request) => {
   }
 
   if (brand) {
-    const isExistBrand = await Brand.findById(brand);
+    const isExistBrand = await Brand.findOne({
+      name: { $regex: brand, $options: 'i' },
+    });
 
     if (!isExistBrand) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Brand not found');

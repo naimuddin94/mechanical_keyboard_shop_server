@@ -68,7 +68,10 @@ const saveRatingIntoDB = async (req: Request) => {
 
 // Fetch all rating information from the database
 const getAllRatingFromDB = async () => {
-  const result = await Rating.find();
+  const result = await Rating.find().populate({
+    path: 'user',
+    select: 'name image',
+  });
   return result;
 };
 

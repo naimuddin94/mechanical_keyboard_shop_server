@@ -23,13 +23,19 @@ const getSingleBrandFromDB = async (id: string) => {
   return result;
 };
 
+// Get a single brand by id
+const getSingleBrandByNameFromDB = async (name: string) => {
+  const result = await Brand.findOne({ name });
+  return result;
+};
+
 // Get all brand form database
 const getAllBrandFromDB = async (query: Record<string, unknown>) => {
   const brandQuery = new QueryBuilder(Brand.find(), query)
     .search(['name', 'origin'])
     .filter()
     .sort()
-    .paginate()
+    .paginate();
 
   const result = await brandQuery.modelQuery;
   const meta = await brandQuery.countTotal();
@@ -55,4 +61,5 @@ export const BrandService = {
   getSingleBrandFromDB,
   getAllBrandFromDB,
   deleteBrandFromDB,
+  getSingleBrandByNameFromDB,
 };

@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import { z } from 'zod';
 
 // 20501430100460005
@@ -20,12 +19,10 @@ const productValidationSchema = z.object({
     required_error: 'Weight is required',
     invalid_type_error: 'Weight must be a valid string',
   }),
-  brand: z.preprocess((arg: unknown) => {
-    if (typeof arg === 'string') {
-      return new Types.ObjectId(arg);
-    }
-    return arg;
-  }, z.instanceof(Types.ObjectId)),
+  brand: z.string({
+    required_error: 'Brand is required',
+    invalid_type_error: 'Brand must be a valid string',
+  }),
   price: z.preprocess((arg: unknown) => {
     if (typeof arg === 'string') {
       return Number(arg);

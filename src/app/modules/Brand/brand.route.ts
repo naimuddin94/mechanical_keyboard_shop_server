@@ -18,4 +18,6 @@ router
   .get(BrandController.fetchSingleBrand)
   .delete(BrandController.deleteBrand);
 
+router.route('fetch-by-name/:name').get(BrandController.fetchSingleBrandByName);
+
 export const brandRouter = router;
