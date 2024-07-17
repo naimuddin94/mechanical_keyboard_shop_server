@@ -148,8 +148,26 @@ const changeCartStatusIntoDB = async (id: string, status: string) => {
   return result;
 };
 
+const getAllCarts = async () => {
+  const result = await Cart.find()
+    .populate({
+      path: 'user',
+      select: 'name',
+    })
+    .populate({
+      path: 'orders',
+      populate: {
+        path: 'product',
+        select: 'name',
+      },
+    });
+
+  return result;
+};
+
 export const CartService = {
   saveCartIntoDB,
   getSingleCartDataFromDB,
   changeCartStatusIntoDB,
+  getAllCarts,
 };

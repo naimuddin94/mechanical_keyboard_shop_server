@@ -43,8 +43,20 @@ const changeCartStatus = asyncHandler(async (req, res) => {
     );
 });
 
+// Fetch all cart for admin
+const fetchAllCarts = asyncHandler(async (req, res) => {
+  const result = await CartService.getAllCarts();
+
+  res
+    .status(httpStatus.OK)
+    .json(
+      new ApiResponse(httpStatus.OK, result, 'Orders retrieved successfully'),
+    );
+});
+
 export const CartController = {
   createCart,
   fetchCartByUserId,
   changeCartStatus,
+  fetchAllCarts,
 };

@@ -12,7 +12,8 @@ router
     auth('admin', 'user'),
     validateRequest(CartValidation.createCartValidationSchema),
     CartController.createCart,
-  );
+  )
+  .get(auth('admin'), CartController.fetchAllCarts);
 
 router
   .route('/my-orders')
