@@ -6,6 +6,8 @@ import Order from '../Order/order.model';
 import Product from '../Product/product.model';
 import Cart from './cart.model';
 import { CartValidation } from './cart.validation';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { cartSearchableFields } from './cart.utils';
 
 const saveCartIntoDB = async (
   userId: string,
@@ -148,8 +150,8 @@ const changeCartStatusIntoDB = async (id: string, status: string) => {
   return result;
 };
 
-const getAllCarts = async () => {
-  const result = await Cart.find()
+const getAllCarts = async (query: Record<string, unknown>) => {
+  const cartQuery = new QueryBuilder(Cart.find()
     .populate({
       path: 'user',
       select: 'name',
@@ -160,9 +162,21 @@ const getAllCarts = async () => {
         path: 'product',
         select: 'name',
       },
-    });
+    }), query)
+    .search(cartSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
-  return result;
+  const result = await cartQuery.modelQuery;
+  const meta = await cartQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
+
 };
 
 export const CartService = {
