@@ -45,7 +45,8 @@ const changeCartStatus = asyncHandler(async (req, res) => {
 
 // Fetch all cart for admin
 const fetchAllCarts = asyncHandler(async (req, res) => {
-  const result = await CartService.getAllCarts();
+  const query = req.query;
+  const result = await CartService.getAllCarts(query);
 
   res
     .status(httpStatus.OK)
